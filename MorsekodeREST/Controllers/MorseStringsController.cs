@@ -11,38 +11,42 @@ namespace MorsekodeREST.Controllers
     [ApiController]
     public class MorseStringsController : ControllerBase
     {
-        private static readonly List<string> MorseStrings = new List<string>();
+        private static readonly List<string> MorseStrings = new List<string>()
+        {
+            "start string"
+        };
+        
 
             // GET: api/MorseStrings
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string GetLatestMorseCharacter()
         {
-            return MorseStrings.
-        }
-
-        // GET: api/MorseStrings/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
+            return MorseStrings.Last();
         }
 
         // POST: api/MorseStrings
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            MorseStrings.Add(value);
         }
 
-        // PUT: api/MorseStrings/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            MorseStrings.RemoveAt(id);
         }
-    }
+
+        [HttpDelete]
+        public void DeleteAll()
+        {
+            foreach (string morseString in MorseStrings)
+            {
+                MorseStrings.Remove(morseString);
+            }
+        }
+    }   
 }
