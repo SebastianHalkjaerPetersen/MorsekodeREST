@@ -13,7 +13,8 @@ namespace MorsekodeREST.Controllers
     {
         private static readonly List<string> MorseStrings = new List<string>()
         {
-            "start string"
+            "start string",
+            "end String"
         };
         
 
