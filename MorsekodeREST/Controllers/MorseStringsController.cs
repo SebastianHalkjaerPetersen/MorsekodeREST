@@ -11,43 +11,108 @@ namespace MorsekodeREST.Controllers
     [ApiController]
     public class MorseStringsController : ControllerBase
     {
-        private static readonly List<string> MorseStrings = new List<string>()
+        private static Dictionary<string, string> MorseStrings = new Dictionary<string, string>()
         {
-            "start string",
-            "end String"
+            {"A", ".-"},
+            {"B", "-..."},
+            {"C", "-.-."},
+            {"D", "-.."},
+            {"E", "."},
+            {"F", "..-."},
+            {"G", "--."},
+            {"H", "...."},
+            {"I", ".."},
+            {"J", ".---"},
+            {"K", "-.-"},
+            {"L", ".-.."},
+            {"M", "--"},
+            {"N", "-."},
+            {"O", "---"},
+            {"P", ".--."},
+            {"Q", "--.-"},
+            {"R", ".-."},
+            {"S", "..."},
+            {"T", "-"},
+            {"U", "..-"},
+            {"V", "...-"},
+            {"W", ".--"},
+            {"X", "-..-"},
+            {"Y", "-.--"},
+            {"Z", "--.."},
+            {"1", ".----"},
+            {"2", "..---"},
+            {"3", "...--"},
+            {"4", "....-"},
+            {"5", "....."},
+            {"6", "-...."},
+            {"7", "--..."},
+            {"8", "---.."},
+            {"9", "----."},
+            {"0", "-----"},
         };
+        private TranslateWorker worker = new TranslateWorker();
+       
         
 
             // GET: api/MorseStrings
         [HttpGet]
-        public string GetLatestMorseCharacter()
+        public string GetLatestTranslationCharacter()
         {
-            return MorseStrings.Last();
+            if (MorseStrings.Count < 1)
+            {
+                return "no input saved";
+            }
+            return MorseStrings.Last().Key;
+        }
+
+        //GET: api/MorseStrings/id
+        [HttpGet("{text}", Name = "Get")]
+        public string GetMorseFromText(string text)
+        {
+            if (MorseStrings.Count < 1)
+            {
+                return "no input saved";
+            }
+
+            if (text.Contains(".") || text.Contains("-"))
+            {
+                if (MorseStrings.Values.Contains(text))
+                {
+                    return MorseStrings.FirstOrDefault(x => x.Value == text).Key;
+                }
+
+                return "ugyldigt input";
+            }
+
+            return MorseStrings[text.ToUpper()];
+
+
         }
 
         // POST: api/MorseStrings
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            MorseStrings.Add(value);
+            MorseStrings.Add(value, worker.GetTranslation(value).ToString());
         }
 
         
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            MorseStrings.RemoveAt(id);
+            MorseStrings.Remove(id);
         }
 
         [HttpDelete]
         public void DeleteAll()
         {
-            foreach (string morseString in MorseStrings)
+            while (MorseStrings.Count > 36)
             {
-                MorseStrings.Remove(morseString);
+                MorseStrings.Remove(MorseStrings.Last().Key);
             }
+
         }
     }   
 }
